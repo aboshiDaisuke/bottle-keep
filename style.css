@@ -930,6 +930,23 @@ body::before {
     transform: scale(0.9);
 }
 
+.btn-add-inline.pulse {
+    animation: pulseGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 2px 10px rgba(124, 92, 252, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 2px 20px rgba(124, 92, 252, 0.7), 0 0 30px rgba(124, 92, 252, 0.3);
+        transform: scale(1.08);
+    }
+}
+
 .field-row {
     display: flex;
     gap: 12px;

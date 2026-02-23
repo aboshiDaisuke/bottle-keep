@@ -393,14 +393,28 @@ const App = {
         // Customer select
         const cs = document.getElementById('bottleCustomer');
         const customers = Store.getCustomers();
-        cs.innerHTML = '<option value="">顧客を選択...</option>' +
-            customers.map(c => `<option value="${c.id}" ${b && b.customerId === c.id ? 'selected' : ''}>${esc(c.name)}</option>`).join('');
+        const custBtn = document.getElementById('btnAddCustomerInline');
+        if (customers.length === 0) {
+            cs.innerHTML = '<option value="">← ＋ボタンで顧客を追加</option>';
+            custBtn.classList.add('pulse');
+        } else {
+            cs.innerHTML = '<option value="">顧客を選択...</option>' +
+                customers.map(c => `<option value="${c.id}" ${b && b.customerId === c.id ? 'selected' : ''}>${esc(c.name)}</option>`).join('');
+            custBtn.classList.remove('pulse');
+        }
 
         // Location select
         const ls = document.getElementById('bottleLocation');
         const locations = Store.getLocations();
-        ls.innerHTML = '<option value="">場所を選択...</option>' +
-            locations.map(l => `<option value="${l.id}" ${b && b.locationId === l.id ? 'selected' : ''}>${esc(l.name)}${l.area ? ' (' + esc(l.area) + ')' : ''}</option>`).join('');
+        const locBtn = document.getElementById('btnAddLocationInline');
+        if (locations.length === 0) {
+            ls.innerHTML = '<option value="">← ＋ボタンで場所を追加</option>';
+            locBtn.classList.add('pulse');
+        } else {
+            ls.innerHTML = '<option value="">場所を選択...</option>' +
+                locations.map(l => `<option value="${l.id}" ${b && b.locationId === l.id ? 'selected' : ''}>${esc(l.name)}${l.area ? ' (' + esc(l.area) + ')' : ''}</option>`).join('');
+            locBtn.classList.remove('pulse');
+        }
 
         document.getElementById('bottleCategorySelect').value = b ? b.category : '';
         document.getElementById('bottleName').value = b ? b.name : '';
