@@ -22,11 +22,13 @@ const Store = {
             list.push(c);
         }
         this._set(this.K.customers, list);
+        if (typeof FireSync !== 'undefined') FireSync.autoSync();
         return c;
     },
     deleteCustomer(id) {
         this._set(this.K.customers, this.getCustomers().filter(c => c.id !== id));
         this._set(this.K.bottles, this.getBottles().filter(b => b.customerId !== id));
+        if (typeof FireSync !== 'undefined') FireSync.autoSync();
     },
 
     // Bottles
@@ -42,10 +44,12 @@ const Store = {
             list.push(b);
         }
         this._set(this.K.bottles, list);
+        if (typeof FireSync !== 'undefined') FireSync.autoSync();
         return b;
     },
     deleteBottle(id) {
         this._set(this.K.bottles, this.getBottles().filter(b => b.id !== id));
+        if (typeof FireSync !== 'undefined') FireSync.autoSync();
     },
 
     // Locations
@@ -61,10 +65,12 @@ const Store = {
             list.push(l);
         }
         this._set(this.K.locations, list);
+        if (typeof FireSync !== 'undefined') FireSync.autoSync();
         return l;
     },
     deleteLocation(id) {
         this._set(this.K.locations, this.getLocations().filter(l => l.id !== id));
+        if (typeof FireSync !== 'undefined') FireSync.autoSync();
     },
 
     // Export / Import
@@ -147,6 +153,8 @@ const App = {
         this.setDate();
         this.renderAll();
         this.registerSW();
+        // Firebase
+        if (typeof FireSync !== 'undefined') FireSync.init();
     },
 
     // -- Service Worker --

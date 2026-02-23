@@ -161,6 +161,11 @@
                     <h1>⚙️ 設定</h1>
                 </header>
 
+                <div class="section-card" id="cloudSyncSection">
+                    <div class="section-title">☁️ クラウド同期</div>
+                    <p class="section-desc">読み込み中...</p>
+                </div>
+
                 <div class="section-card">
                     <div class="section-title">💾 データのバックアップ</div>
                     <p class="section-desc">データはすべてこの端末に保存されています。<br>大切なデータを守るため、定期的にバックアップしてください。</p>
@@ -384,7 +389,11 @@
     <!-- Toast -->
     <div class="toast-wrap" id="toastContainer"></div>
 
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
     <script src="app.js"></script>
+    <script src="firebase-sync.js"></script>
 </body>
 
 </html>

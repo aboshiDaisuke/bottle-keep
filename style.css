@@ -1113,6 +1113,64 @@ body::before {
     font-weight: 500;
 }
 
+/* ===== Cloud Sync UI ===== */
+.cloud-user {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background: var(--bg-glass);
+    border-radius: var(--r-sm);
+}
+
+.cloud-user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cloud-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid rgba(124, 92, 252, 0.3);
+}
+
+.cloud-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.cloud-email {
+    font-size: 0.72rem;
+    color: var(--c-sub);
+}
+
+.cloud-status {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.cloud-status.synced {
+    background: rgba(92, 252, 140, 0.1);
+    color: var(--c-green);
+}
+
+.btn-google {
+    background: white;
+    color: #333;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.btn-google:active {
+    background: #f5f5f5;
+}
+
 .danger-zone {
     border-color: rgba(252, 92, 92, 0.2);
 }
