@@ -1,45 +1,53 @@
-/* ===== Design Tokens ===== */
+/* ===== Design Tokens (Mac / iOS Dark Mode) ===== */
 :root {
-    --bg-0: #0a0a14;
-    --bg-1: #0f0f1a;
-    --bg-2: #1a1a2e;
-    --bg-card: rgba(26, 26, 46, 0.85);
-    --bg-glass: rgba(255, 255, 255, 0.04);
-    --bg-input: rgba(255, 255, 255, 0.06);
-    --bg-modal: rgba(10, 10, 20, 0.92);
+    --bg-0: #000000;
+    --bg-1: #1c1c1e;
+    --bg-2: #2c2c2e;
+    --bg-card: rgba(28, 28, 30, 0.6);
+    --bg-glass: rgba(255, 255, 255, 0.1);
+    --bg-input: rgba(255, 255, 255, 0.1);
+    --bg-modal: rgba(0, 0, 0, 0.4);
 
-    --c-text: #e8e8f0;
-    --c-sub: #8888aa;
-    --c-muted: #555570;
+    --c-text: #ffffff;
+    --c-sub: rgba(235, 235, 245, 0.6);
+    --c-muted: rgba(235, 235, 245, 0.3);
 
-    --c-purple: #7c5cfc;
-    --c-purple-l: #9a80ff;
-    --c-pink: #fc5c8c;
-    --c-blue: #5cccfc;
-    --c-orange: #fcaa5c;
-    --c-green: #5cfc8c;
-    --c-red: #fc5c5c;
+    --c-purple: #0a84ff;
+    /* Apple Blue */
+    --c-purple-l: #5ac8fa;
+    /* Light Blue */
+    --c-pink: #ff453a;
+    /* Apple Red */
+    --c-blue: #0a84ff;
+    --c-orange: #ff9f0a;
+    /* Apple Orange */
+    --c-green: #32d74b;
+    /* Apple Green */
+    --c-red: #ff453a;
 
-    --g-purple: linear-gradient(135deg, #7c5cfc, #5c8cfc);
-    --g-pink: linear-gradient(135deg, #fc5c8c, #fcaa5c);
-    --g-blue: linear-gradient(135deg, #5cccfc, #5cfccc);
-    --g-orange: linear-gradient(135deg, #fcaa5c, #fc885c);
+    --g-purple: #0a84ff;
+    /* Solid Apple Blue */
+    --g-pink: #ff453a;
+    /* Solid Apple Red */
+    --g-blue: #0a84ff;
+    --g-orange: #ff9f0a;
 
-    --border: rgba(255, 255, 255, 0.08);
-    --border-focus: rgba(124, 92, 252, 0.5);
+    --border: rgba(84, 84, 88, 0.65);
+    --border-focus: #0a84ff;
 
-    --r-sm: 10px;
-    --r-md: 14px;
-    --r-lg: 20px;
+    --r-sm: 8px;
+    --r-md: 12px;
+    --r-lg: 16px;
 
     --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    --glow: 0 0 20px rgba(124, 92, 252, 0.15);
+    --glow: none;
 
-    --tab-h: 64px;
+    --tab-h: 56px;
     --safe-b: env(safe-area-inset-bottom, 0px);
 
-    --font: 'Noto Sans JP', -apple-system, 'Hiragino Sans', sans-serif;
-    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    /* Apple System Font */
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+    --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 /* ===== Reset ===== */
@@ -71,10 +79,7 @@ body::before {
     content: '';
     position: fixed;
     inset: 0;
-    background:
-        radial-gradient(ellipse at 20% 10%, rgba(124, 92, 252, 0.07) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 90%, rgba(252, 92, 140, 0.05) 0%, transparent 50%);
-    pointer-events: none;
+    background: var(--bg-0);
     z-index: 0;
 }
 
@@ -111,9 +116,9 @@ body::before {
     right: 0;
     height: calc(var(--tab-h) + var(--safe-b));
     padding-bottom: var(--safe-b);
-    background: rgba(15, 15, 26, 0.92);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: rgba(28, 28, 30, 0.7);
+    backdrop-filter: blur(25px) saturate(180%);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
     border-top: 1px solid var(--border);
     display: flex;
     z-index: 100;
@@ -149,23 +154,11 @@ body::before {
 }
 
 .tab.active {
-    color: var(--c-purple-l);
+    color: var(--c-purple);
 }
 
 .tab.active .tab-icon {
-    transform: scale(1.15);
-}
-
-.tab.active::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 32px;
-    height: 3px;
-    background: var(--g-purple);
-    border-radius: 0 0 3px 3px;
+    transform: scale(1.1);
 }
 
 /* ===== Page Container ===== */
@@ -647,16 +640,15 @@ body::before {
     height: 56px;
     border-radius: 50%;
     background: var(--g-purple);
-    border: none;
     color: white;
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     font-weight: 300;
     cursor: pointer;
     z-index: 50;
     display: none;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 20px rgba(124, 92, 252, 0.4);
+    box-shadow: 0 4px 15px rgba(10, 132, 255, 0.4);
     transition: transform 0.2s var(--ease), box-shadow 0.2s;
     -webkit-tap-highlight-color: transparent;
 }
@@ -693,7 +685,7 @@ body::before {
 .btn-primary {
     background: var(--g-purple);
     color: white;
-    box-shadow: 0 4px 15px rgba(124, 92, 252, 0.3);
+    box-shadow: none;
 }
 
 .btn-secondary {
@@ -703,9 +695,9 @@ body::before {
 }
 
 .btn-danger {
-    background: linear-gradient(135deg, var(--c-red), var(--c-pink));
+    background: var(--g-pink);
     color: white;
-    box-shadow: 0 4px 15px rgba(252, 92, 92, 0.3);
+    box-shadow: none;
 }
 
 .btn:disabled,
@@ -746,9 +738,9 @@ button:disabled {
     display: none;
     position: fixed;
     inset: 0;
-    background: var(--bg-modal);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(15px) saturate(150%);
+    -webkit-backdrop-filter: blur(15px) saturate(150%);
     z-index: 200;
     align-items: flex-end;
     justify-content: center;
