@@ -1,5 +1,5 @@
 // ===== Service Worker for BottleKeep PWA =====
-const CACHE_NAME = 'bottlekeep-v1';
+const CACHE_NAME = 'bottlekeep-v2';
 const ASSETS = [
     './',
     './index.html',
