@@ -95,8 +95,18 @@ const Store = {
 };
 
 // ===== Constants =====
-const CAT_LABEL = { whisky: 'ウイスキー', wine: 'ワイン', shochu: '焼酎', sake: '日本酒', brandy: 'ブランデー', other: 'その他' };
-const CAT_ICON = { whisky: '🥃', wine: '🍷', shochu: '🍶', sake: '🍶', brandy: '🥃', other: '🍾' };
+const CAT_LABEL = {
+    whisky: 'ウイスキー', wine: 'ワイン', champagne: 'シャンパン',
+    shochu: '焼酎', sake: '日本酒', brandy: 'ブランデー',
+    gin: 'ジン', vodka: 'ウォッカ', rum: 'ラム', tequila: 'テキーラ',
+    beer: 'ビール', cocktail: 'カクテル', liqueur: 'リキュール', other: 'その他'
+};
+const CAT_ICON = {
+    whisky: '🥃', wine: '🍷', champagne: '🥂',
+    shochu: '🍶', sake: '🍶', brandy: '🥃',
+    gin: '🍸', vodka: '🍸', rum: '🍹', tequila: '🥃',
+    beer: '🍺', cocktail: '🍸', liqueur: '🍷', other: '🍾'
+};
 const STATUS_LABEL = { keeping: '保管中', finished: '空き', expired: '期限切れ' };
 
 // ===== Helpers =====
