@@ -1,9 +1,9 @@
 // ===== Service Worker for BottleKeep PWA =====
-const CACHE_NAME = 'bottlekeep-v11';
+const CACHE_NAME = 'bottlekeep-v12';
 const ASSETS = [
     './',
     './index.html',
-    './style.css?v=2',
+    './style.css?v=3',
     './app.js',
     './firebase-sync.js',
     './manifest.json',
