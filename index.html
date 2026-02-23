@@ -247,9 +247,13 @@
                 <input type="hidden" id="bottleId">
                 <div class="field">
                     <label for="bottleCustomer">顧客 <span class="req">*</span></label>
-                    <select id="bottleCustomer" required>
-                        <option value="">選択...</option>
-                    </select>
+                    <div class="field-with-add">
+                        <select id="bottleCustomer" required>
+                            <option value="">選択...</option>
+                        </select>
+                        <button type="button" class="btn-add-inline" id="btnAddCustomerInline"
+                            title="新規顧客を追加">＋</button>
+                    </div>
                 </div>
                 <div class="field">
                     <label for="bottleName">ボトル名 <span class="req">*</span></label>
@@ -279,9 +283,13 @@
                 </div>
                 <div class="field">
                     <label for="bottleLocation">保管場所 <span class="req">*</span></label>
-                    <select id="bottleLocation" required>
-                        <option value="">選択...</option>
-                    </select>
+                    <div class="field-with-add">
+                        <select id="bottleLocation" required>
+                            <option value="">選択...</option>
+                        </select>
+                        <button type="button" class="btn-add-inline" id="btnAddLocationInline"
+                            title="新規場所を追加">＋</button>
+                    </div>
                 </div>
                 <div class="field-row">
                     <div class="field">

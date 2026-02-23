@@ -137,6 +137,7 @@ function closeModal(id) {
 const App = {
     page: 'dashboard',
     deleteCb: null,
+    _inlineReturn: null, // { modal, selectId, newId } — ボトルフォームからのインライン追加用
 
     init() {
         this.bindTabs();
@@ -213,6 +214,18 @@ const App = {
         document.getElementById('confirmDelete').addEventListener('click', () => {
             if (this.deleteCb) this.deleteCb();
             closeModal('modalConfirm');
+        });
+
+        // Inline add buttons (from bottle form)
+        document.getElementById('btnAddCustomerInline').addEventListener('click', () => {
+            this._inlineReturn = { modal: 'modalBottle', selectId: 'bottleCustomer', type: 'customer' };
+            closeModal('modalBottle');
+            setTimeout(() => this.openCustomerForm(), 150);
+        });
+        document.getElementById('btnAddLocationInline').addEventListener('click', () => {
+            this._inlineReturn = { modal: 'modalBottle', selectId: 'bottleLocation', type: 'location' };
+            closeModal('modalBottle');
+            setTimeout(() => this.openLocationForm(), 150);
         });
     },
 
@@ -307,10 +320,20 @@ const App = {
             note: document.getElementById('customerNote').value.trim(),
         };
         if (!c.name) { toast('顧客名を入力してください', 'error'); return; }
-        Store.saveCustomer(c);
+        const saved = Store.saveCustomer(c);
         closeModal('modalCustomer');
         this.renderAll();
         toast(c.id ? '顧客情報を更新しました' : '顧客を登録しました');
+
+        // Return to bottle form if inline add
+        if (this._inlineReturn && this._inlineReturn.type === 'customer') {
+            const ret = this._inlineReturn;
+            this._inlineReturn = null;
+            setTimeout(() => {
+                this.openBottleForm();
+                document.getElementById(ret.selectId).value = saved.id;
+            }, 150);
+        }
     },
 
     confirmDeleteCustomer(id, name) {
@@ -499,10 +522,20 @@ const App = {
             note: document.getElementById('locationNote').value.trim(),
         };
         if (!l.name) { toast('場所名を入力してください', 'error'); return; }
-        Store.saveLocation(l);
+        const saved = Store.saveLocation(l);
         closeModal('modalLocation');
         this.renderAll();
         toast(l.id ? '場所を更新しました' : '場所を登録しました');
+
+        // Return to bottle form if inline add
+        if (this._inlineReturn && this._inlineReturn.type === 'location') {
+            const ret = this._inlineReturn;
+            this._inlineReturn = null;
+            setTimeout(() => {
+                this.openBottleForm();
+                document.getElementById(ret.selectId).value = saved.id;
+            }, 150);
+        }
     },
 
     confirmDeleteLocation(id, name) {

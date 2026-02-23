@@ -898,6 +898,38 @@ body::before {
     color: var(--c-text);
 }
 
+.field-with-add {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.field-with-add select {
+    flex: 1;
+}
+
+.btn-add-inline {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border-radius: var(--r-sm);
+    background: var(--g-purple);
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(124, 92, 252, 0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.btn-add-inline:active {
+    transform: scale(0.9);
+}
+
 .field-row {
     display: flex;
     gap: 12px;
