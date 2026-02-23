@@ -708,6 +708,14 @@ body::before {
     box-shadow: 0 4px 15px rgba(252, 92, 92, 0.3);
 }
 
+.btn:disabled,
+button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    filter: grayscale(100%);
+    pointer-events: none;
+}
+
 .btn-block {
     width: 100%;
 }
