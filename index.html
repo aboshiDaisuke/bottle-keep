@@ -377,7 +377,13 @@
                 <button class="modal-close" data-close="modalConfirm">✕</button>
             </div>
             <div class="modal-body">
-                <p id="confirmMessage" class="confirm-msg">本当に削除しますか？</p>
+                <p id="confirmMessage" class="confirm-msg" style="margin-bottom:12px; white-space:pre-wrap;">本当に削除しますか？
+                </p>
+                <div class="field" id="confirmInputWrap" style="display:none; margin-bottom: 20px;">
+                    <label for="confirmInput" style="font-size:0.8rem;color:var(--c-sub);">確認のため「<strong
+                            id="confirmKeywordPlaceholder" style="color:var(--c-red)"></strong>」と入力してください</label>
+                    <input type="text" id="confirmInput" autocomplete="off" style="margin-top:4px;">
+                </div>
                 <div class="modal-actions">
                     <button class="btn btn-secondary" data-close="modalConfirm">キャンセル</button>
                     <button class="btn btn-danger" id="confirmDelete">削除する</button>

@@ -203,6 +203,32 @@ const App = {
             `${n.getMonth() + 1}/${n.getDate()} (${w[n.getDay()]})`;
     },
 
+    openConfirmDialog(msg, expectedKeyword, onConfirm) {
+        document.getElementById('confirmMessage').textContent = msg;
+        this.deleteCb = onConfirm;
+
+        const wrap = document.getElementById('confirmInputWrap');
+        const input = document.getElementById('confirmInput');
+        const btn = document.getElementById('confirmDelete');
+
+        if (expectedKeyword) {
+            wrap.style.display = 'block';
+            document.getElementById('confirmKeywordPlaceholder').textContent = expectedKeyword;
+            input.value = '';
+            input.placeholder = expectedKeyword;
+            btn.disabled = true;
+            input.oninput = e => btn.disabled = (e.target.value !== expectedKeyword);
+        } else {
+            wrap.style.display = 'none';
+            btn.disabled = false;
+        }
+
+        openModal('modalConfirm');
+        if (expectedKeyword) {
+            setTimeout(() => input.focus(), 150);
+        }
+    },
+
     // -- Modals --
     bindModals() {
         document.querySelectorAll('[data-close]').forEach(b => {
@@ -355,13 +381,15 @@ const App = {
 
         // Clear all
         document.getElementById('btnClearAll').addEventListener('click', () => {
-            document.getElementById('confirmMessage').textContent = 'すべてのデータを削除しますか？この操作は元に戻せません。';
-            this.deleteCb = () => {
-                Store.clearAll();
-                this.renderAll();
-                toast('すべてのデータを削除しました');
-            };
-            openModal('modalConfirm');
+            this.openConfirmDialog(
+                'すべてのデータを削除しますか？\nこの操作は元に戻せません。',
+                '削除',
+                () => {
+                    Store.clearAll();
+                    this.renderAll();
+                    toast('すべてのデータを削除しました');
+                }
+            );
         });
     },
 
@@ -392,13 +420,15 @@ const App = {
     },
 
     confirmDeleteCustomer(id, name) {
-        document.getElementById('confirmMessage').textContent = `「${name}」を削除しますか？\n関連するボトルも削除されます。`;
-        this.deleteCb = () => {
-            Store.deleteCustomer(id);
-            this.renderAll();
-            toast('顧客を削除しました');
-        };
-        openModal('modalConfirm');
+        this.openConfirmDialog(
+            `「${name}」を削除しますか？\n関連するボトルも削除されます。`,
+            name,
+            () => {
+                Store.deleteCustomer(id);
+                this.renderAll();
+                toast('顧客を削除しました');
+            }
+        );
     },
 
     renderCustomers() {
@@ -507,13 +537,15 @@ const App = {
     },
 
     confirmDeleteBottle(id, name) {
-        document.getElementById('confirmMessage').textContent = `ボトル「${name}」を削除しますか？`;
-        this.deleteCb = () => {
-            Store.deleteBottle(id);
-            this.renderAll();
-            toast('ボトルを削除しました');
-        };
-        openModal('modalConfirm');
+        this.openConfirmDialog(
+            `ボトル「${name}」を削除しますか？`,
+            name,
+            () => {
+                Store.deleteBottle(id);
+                this.renderAll();
+                toast('ボトルを削除しました');
+            }
+        );
     },
 
     renderBottles() {
@@ -602,13 +634,27 @@ const App = {
         const msg = cnt > 0
             ? `「${name}」には${cnt}本のボトルがあります。削除しますか？`
             : `「${name}」を削除しますか？`;
-        document.getElementById('confirmMessage').textContent = msg;
-        this.deleteCb = () => {
-            Store.deleteLocation(id);
-            this.renderAll();
-            toast('場所を削除しました');
-        };
-        openModal('modalConfirm');
+
+        this.openConfirmDialog(
+            msg,
+            name,
+            () => {
+                // Remove location from bottles
+                const list = Store.getBottles();
+                let changed = false;
+                list.forEach(b => {
+                    if (b.locationId === id) { b.locationId = ''; changed = true; }
+                });
+                if (changed) {
+                    Store._set(Store.K.bottles, list);
+                    if (typeof FireSync !== 'undefined') FireSync.autoSync();
+                }
+
+                Store.deleteLocation(id);
+                this.renderAll();
+                toast('場所を削除しました');
+            }
+        );
     },
 
     renderLocations() {
