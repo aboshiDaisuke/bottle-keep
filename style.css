@@ -947,6 +947,85 @@ body::before {
     }
 }
 
+/* Inline form (inside bottle modal) */
+.inline-form {
+    margin-top: 8px;
+    padding: 12px;
+    background: rgba(124, 92, 252, 0.06);
+    border: 1px solid rgba(124, 92, 252, 0.2);
+    border-radius: var(--r-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.inline-form input {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    color: var(--c-text);
+    font-size: 16px;
+    font-family: var(--font);
+    outline: none;
+}
+
+.inline-form input:focus {
+    border-color: var(--border-focus);
+    box-shadow: var(--glow);
+}
+
+.inline-form input::placeholder {
+    color: var(--c-muted);
+}
+
+.inline-form-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-inline-cancel,
+.btn-inline-save {
+    flex: 1;
+    padding: 9px;
+    border-radius: var(--r-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: var(--font);
+    cursor: pointer;
+    border: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.btn-inline-cancel {
+    background: var(--bg-input);
+    color: var(--c-sub);
+    border: 1px solid var(--border);
+}
+
+.btn-inline-save {
+    background: var(--g-purple);
+    color: white;
+}
+
+.btn-inline-save:active {
+    transform: scale(0.97);
+}
+
 .field-row {
     display: flex;
     gap: 12px;

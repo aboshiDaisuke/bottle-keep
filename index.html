@@ -251,8 +251,15 @@
                         <select id="bottleCustomer" required>
                             <option value="">選択...</option>
                         </select>
-                        <button type="button" class="btn-add-inline" id="btnAddCustomerInline"
-                            title="新規顧客を追加">＋</button>
+                        <button type="button" class="btn-add-inline" id="btnAddCustomerInline">＋</button>
+                    </div>
+                    <div class="inline-form" id="inlineCustomerForm" style="display:none">
+                        <input type="text" id="inlineCustomerName" placeholder="顧客名を入力" autocomplete="off">
+                        <input type="tel" id="inlineCustomerPhone" placeholder="電話番号（任意）">
+                        <div class="inline-form-actions">
+                            <button type="button" class="btn-inline-cancel" id="inlineCustCancel">キャンセル</button>
+                            <button type="button" class="btn-inline-save" id="inlineCustSave">登録</button>
+                        </div>
                     </div>
                 </div>
                 <div class="field">
@@ -287,8 +294,15 @@
                         <select id="bottleLocation" required>
                             <option value="">選択...</option>
                         </select>
-                        <button type="button" class="btn-add-inline" id="btnAddLocationInline"
-                            title="新規場所を追加">＋</button>
+                        <button type="button" class="btn-add-inline" id="btnAddLocationInline">＋</button>
+                    </div>
+                    <div class="inline-form" id="inlineLocationForm" style="display:none">
+                        <input type="text" id="inlineLocationName" placeholder="場所名を入力（例: A棚 上段）" autocomplete="off">
+                        <input type="text" id="inlineLocationArea" placeholder="エリア（任意）">
+                        <div class="inline-form-actions">
+                            <button type="button" class="btn-inline-cancel" id="inlineLocCancel">キャンセル</button>
+                            <button type="button" class="btn-inline-save" id="inlineLocSave">登録</button>
+                        </div>
                     </div>
                 </div>
                 <div class="field-row">

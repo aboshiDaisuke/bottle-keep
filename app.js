@@ -137,7 +137,6 @@ function closeModal(id) {
 const App = {
     page: 'dashboard',
     deleteCb: null,
-    _inlineReturn: null, // { modal, selectId, newId } — ボトルフォームからのインライン追加用
 
     init() {
         this.bindTabs();
@@ -216,17 +215,75 @@ const App = {
             closeModal('modalConfirm');
         });
 
-        // Inline add buttons (from bottle form)
+        // Inline add: toggle inline form within bottle modal
         document.getElementById('btnAddCustomerInline').addEventListener('click', () => {
-            this._inlineReturn = { modal: 'modalBottle', selectId: 'bottleCustomer', type: 'customer' };
-            closeModal('modalBottle');
-            setTimeout(() => this.openCustomerForm(), 150);
+            const form = document.getElementById('inlineCustomerForm');
+            form.style.display = form.style.display === 'none' ? 'flex' : 'none';
+            if (form.style.display === 'flex') {
+                document.getElementById('inlineCustomerName').value = '';
+                document.getElementById('inlineCustomerPhone').value = '';
+                document.getElementById('inlineCustomerName').focus();
+            }
         });
+        document.getElementById('inlineCustCancel').addEventListener('click', () => {
+            document.getElementById('inlineCustomerForm').style.display = 'none';
+        });
+        document.getElementById('inlineCustSave').addEventListener('click', () => {
+            const name = document.getElementById('inlineCustomerName').value.trim();
+            if (!name) { toast('顧客名を入力してください', 'error'); return; }
+            const saved = Store.saveCustomer({
+                name,
+                phone: document.getElementById('inlineCustomerPhone').value.trim(),
+            });
+            document.getElementById('inlineCustomerForm').style.display = 'none';
+            // Refresh customer select and auto-select the new one
+            this._refreshBottleSelects(saved.id, null);
+            this.renderAll();
+            toast('顧客を登録しました');
+        });
+
         document.getElementById('btnAddLocationInline').addEventListener('click', () => {
-            this._inlineReturn = { modal: 'modalBottle', selectId: 'bottleLocation', type: 'location' };
-            closeModal('modalBottle');
-            setTimeout(() => this.openLocationForm(), 150);
+            const form = document.getElementById('inlineLocationForm');
+            form.style.display = form.style.display === 'none' ? 'flex' : 'none';
+            if (form.style.display === 'flex') {
+                document.getElementById('inlineLocationName').value = '';
+                document.getElementById('inlineLocationArea').value = '';
+                document.getElementById('inlineLocationName').focus();
+            }
         });
+        document.getElementById('inlineLocCancel').addEventListener('click', () => {
+            document.getElementById('inlineLocationForm').style.display = 'none';
+        });
+        document.getElementById('inlineLocSave').addEventListener('click', () => {
+            const name = document.getElementById('inlineLocationName').value.trim();
+            if (!name) { toast('場所名を入力してください', 'error'); return; }
+            const saved = Store.saveLocation({
+                name,
+                area: document.getElementById('inlineLocationArea').value.trim(),
+                capacity: 10,
+            });
+            document.getElementById('inlineLocationForm').style.display = 'none';
+            this._refreshBottleSelects(null, saved.id);
+            this.renderAll();
+            toast('場所を登録しました');
+        });
+    },
+
+    // Refresh selects inside bottle form without losing other inputs
+    _refreshBottleSelects(selectCustomerId, selectLocationId) {
+        const cs = document.getElementById('bottleCustomer');
+        const currentCust = selectCustomerId || cs.value;
+        const customers = Store.getCustomers();
+        cs.innerHTML = '<option value="">顧客を選択...</option>' +
+            customers.map(c => `<option value="${c.id}" ${c.id === currentCust ? 'selected' : ''}>${esc(c.name)}</option>`).join('');
+        document.getElementById('btnAddCustomerInline').classList.remove('pulse');
+
+        const ls = document.getElementById('bottleLocation');
+        const currentLoc = selectLocationId || ls.value;
+        const locations = Store.getLocations();
+        ls.innerHTML = '<option value="">場所を選択...</option>' +
+            locations.map(l => `<option value="${l.id}" ${l.id === currentLoc ? 'selected' : ''}>${esc(l.name)}${l.area ? ' (' + esc(l.area) + ')' : ''}</option>`).join('');
+        document.getElementById('btnAddLocationInline').classList.remove('pulse');
     },
 
     // -- Forms --
@@ -324,16 +381,6 @@ const App = {
         closeModal('modalCustomer');
         this.renderAll();
         toast(c.id ? '顧客情報を更新しました' : '顧客を登録しました');
-
-        // Return to bottle form if inline add
-        if (this._inlineReturn && this._inlineReturn.type === 'customer') {
-            const ret = this._inlineReturn;
-            this._inlineReturn = null;
-            setTimeout(() => {
-                this.openBottleForm();
-                document.getElementById(ret.selectId).value = saved.id;
-            }, 150);
-        }
     },
 
     confirmDeleteCustomer(id, name) {
@@ -540,16 +587,6 @@ const App = {
         closeModal('modalLocation');
         this.renderAll();
         toast(l.id ? '場所を更新しました' : '場所を登録しました');
-
-        // Return to bottle form if inline add
-        if (this._inlineReturn && this._inlineReturn.type === 'location') {
-            const ret = this._inlineReturn;
-            this._inlineReturn = null;
-            setTimeout(() => {
-                this.openBottleForm();
-                document.getElementById(ret.selectId).value = saved.id;
-            }, 150);
-        }
     },
 
     confirmDeleteLocation(id, name) {
