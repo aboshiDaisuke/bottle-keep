@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ボトルキープ">
+    <meta name="theme-color" content="#0f0f1a">
+    <meta name="description" content="顧客のボトルキープを効率的に管理するアプリ。データはすべて端末にローカル保存。">
+    <title>ボトルキープ管理</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app" id="app">
+        <!-- Bottom Tab Navigation (Mobile-first) -->
+        <nav class="tab-bar" id="tabBar">
+            <button class="tab active" data-page="dashboard" id="tab-dashboard">
+                <span class="tab-icon">📊</span>
+                <span class="tab-label">ホーム</span>
+            </button>
+            <button class="tab" data-page="customers" id="tab-customers">
+                <span class="tab-icon">👤</span>
+                <span class="tab-label">顧客</span>
+            </button>
+            <button class="tab" data-page="bottles" id="tab-bottles">
+                <span class="tab-icon">🍾</span>
+                <span class="tab-label">ボトル</span>
+            </button>
+            <button class="tab" data-page="locations" id="tab-locations">
+                <span class="tab-icon">📍</span>
+                <span class="tab-label">場所</span>
+            </button>
+            <button class="tab" data-page="settings" id="tab-settings">
+                <span class="tab-icon">⚙️</span>
+                <span class="tab-label">設定</span>
+            </button>
+        </nav>
+
+        <!-- Page Container -->
+        <div class="page-container" id="pageContainer">
+
+            <!-- Dashboard -->
+            <section class="page active" id="page-dashboard">
+                <header class="page-top">
+                    <h1>🍷 ボトルキープ</h1>
+                    <span class="date-display" id="currentDate"></span>
+                </header>
+
+                <div class="stats-row">
+                    <div class="stat stat-purple">
+                        <span class="stat-num" id="statCustomers">0</span>
+                        <span class="stat-lbl">顧客</span>
+                    </div>
+                    <div class="stat stat-pink">
+                        <span class="stat-num" id="statBottles">0</span>
+                        <span class="stat-lbl">ボトル</span>
+                    </div>
+                    <div class="stat stat-blue">
+                        <span class="stat-num" id="statLocations">0</span>
+                        <span class="stat-lbl">場所</span>
+                    </div>
+                    <div class="stat stat-orange">
+                        <span class="stat-num" id="statExpiring">0</span>
+                        <span class="stat-lbl">期限近</span>
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <div class="section-title">⚠️ 期限間近のボトル</div>
+                    <div id="expiringBottles" class="item-list">
+                        <div class="empty">期限間近のボトルはありません</div>
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <div class="section-title">🕐 最近の登録</div>
+                    <div id="recentBottles" class="item-list">
+                        <div class="empty">まだボトルが登録されていません</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Customers -->
+            <section class="page" id="page-customers">
+                <header class="page-top">
+                    <h1>👤 顧客管理</h1>
+                </header>
+                <div class="search-bar">
+                    <input type="text" id="customerSearch" placeholder="🔍 顧客を検索..." autocomplete="off">
+                </div>
+                <div class="list-controls">
+                    <select id="customerSort">
+                        <option value="name">名前順</option>
+                        <option value="bottles">ボトル数順</option>
+                        <option value="recent">登録日順</option>
+                    </select>
+                </div>
+                <div class="item-list" id="customerList">
+                    <div class="empty">顧客が登録されていません</div>
+                </div>
+                <button class="fab" id="btnAddCustomer" aria-label="新規顧客">＋</button>
+            </section>
+
+            <!-- Bottles -->
+            <section class="page" id="page-bottles">
+                <header class="page-top">
+                    <h1>🍾 ボトル管理</h1>
+                </header>
+                <div class="search-bar">
+                    <input type="text" id="bottleSearch" placeholder="🔍 ボトルを検索..." autocomplete="off">
+                </div>
+                <div class="list-controls">
+                    <select id="bottleCategory">
+                        <option value="">すべてのカテゴリ</option>
+                        <option value="whisky">ウイスキー</option>
+                        <option value="wine">ワイン</option>
+                        <option value="shochu">焼酎</option>
+                        <option value="sake">日本酒</option>
+                        <option value="brandy">ブランデー</option>
+                        <option value="other">その他</option>
+                    </select>
+                    <select id="bottleStatus">
+                        <option value="">全ステータス</option>
+                        <option value="keeping">保管中</option>
+                        <option value="finished">空き</option>
+                        <option value="expired">期限切れ</option>
+                    </select>
+                </div>
+                <div class="item-list" id="bottleList">
+                    <div class="empty">ボトルが登録されていません</div>
+                </div>
+                <button class="fab" id="btnAddBottle" aria-label="新規ボトル">＋</button>
+            </section>
+
+            <!-- Locations -->
+            <section class="page" id="page-locations">
+                <header class="page-top">
+                    <h1>📍 保管場所</h1>
+                </header>
+                <div class="search-bar">
+                    <input type="text" id="locationSearch" placeholder="🔍 場所を検索..." autocomplete="off">
+                </div>
+                <div class="item-list grid" id="locationList">
+                    <div class="empty">保管場所が登録されていません</div>
+                </div>
+                <button class="fab" id="btnAddLocation" aria-label="新規場所">＋</button>
+            </section>
+
+            <!-- Settings -->
+            <section class="page" id="page-settings">
+                <header class="page-top">
+                    <h1>⚙️ 設定</h1>
+                </header>
+
+                <div class="section-card">
+                    <div class="section-title">💾 データのバックアップ</div>
+                    <p class="section-desc">データはすべてこの端末に保存されています。<br>大切なデータを守るため、定期的にバックアップしてください。</p>
+                    <div class="settings-actions">
+                        <button class="btn btn-primary btn-block" id="btnExport">
+                            📤 バックアップをダウンロード
+                        </button>
+                        <p class="hint">JSONファイルが保存されます。iCloud Drive や Google Drive などに保管してください。</p>
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <div class="section-title">📂 データの復元</div>
+                    <p class="section-desc">バックアップファイルからデータを復元します。</p>
+                    <div class="settings-actions">
+                        <button class="btn btn-secondary btn-block" id="btnImport">
+                            📥 バックアップから復元
+                        </button>
+                        <input type="file" id="importFile" accept=".json" style="display:none">
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <div class="section-title">ℹ️ このアプリについて</div>
+                    <div class="about-info">
+                        <div class="about-row"><span>バージョン</span><span>1.0.0</span></div>
+                        <div class="about-row"><span>データ保存</span><span>ローカルのみ</span></div>
+                        <div class="about-row"><span>通信</span><span>なし（完全オフライン）</span></div>
+                        <div class="about-row"><span>プライバシー</span><span>データは端末外に送信されません</span></div>
+                    </div>
+                </div>
+
+                <div class="section-card danger-zone">
+                    <div class="section-title">⚠️ データの削除</div>
+                    <button class="btn btn-danger btn-block" id="btnClearAll">
+                        🗑️ すべてのデータを削除
+                    </button>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Modal: Customer Form -->
+    <div class="modal-overlay" id="modalCustomer">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="customerModalTitle">新規顧客</h2>
+                <button class="modal-close" data-close="modalCustomer">✕</button>
+            </div>
+            <form id="customerForm" class="modal-body">
+                <input type="hidden" id="customerId">
+                <div class="field">
+                    <label for="customerName">顧客名 <span class="req">*</span></label>
+                    <input type="text" id="customerName" required placeholder="例: 山田太郎" autocomplete="off">
+                </div>
+                <div class="field">
+                    <label for="customerPhone">電話番号</label>
+                    <input type="tel" id="customerPhone" placeholder="例: 090-1234-5678">
+                </div>
+                <div class="field">
+                    <label for="customerEmail">メールアドレス</label>
+                    <input type="email" id="customerEmail" placeholder="例: yamada@example.com">
+                </div>
+                <div class="field">
+                    <label for="customerNote">メモ</label>
+                    <textarea id="customerNote" rows="3" placeholder="備考..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" data-close="modalCustomer">キャンセル</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Bottle Form -->
+    <div class="modal-overlay" id="modalBottle">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="bottleModalTitle">新規ボトル</h2>
+                <button class="modal-close" data-close="modalBottle">✕</button>
+            </div>
+            <form id="bottleForm" class="modal-body">
+                <input type="hidden" id="bottleId">
+                <div class="field">
+                    <label for="bottleCustomer">顧客 <span class="req">*</span></label>
+                    <select id="bottleCustomer" required>
+                        <option value="">選択...</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="bottleName">ボトル名 <span class="req">*</span></label>
+                    <input type="text" id="bottleName" required placeholder="例: 山崎12年" autocomplete="off">
+                </div>
+                <div class="field-row">
+                    <div class="field">
+                        <label for="bottleCategorySelect">カテゴリ <span class="req">*</span></label>
+                        <select id="bottleCategorySelect" required>
+                            <option value="">選択...</option>
+                            <option value="whisky">ウイスキー</option>
+                            <option value="wine">ワイン</option>
+                            <option value="shochu">焼酎</option>
+                            <option value="sake">日本酒</option>
+                            <option value="brandy">ブランデー</option>
+                            <option value="other">その他</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="bottleStatusSelect">ステータス</label>
+                        <select id="bottleStatusSelect">
+                            <option value="keeping">保管中</option>
+                            <option value="finished">空き</option>
+                            <option value="expired">期限切れ</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="bottleLocation">保管場所 <span class="req">*</span></label>
+                    <select id="bottleLocation" required>
+                        <option value="">選択...</option>
+                    </select>
+                </div>
+                <div class="field-row">
+                    <div class="field">
+                        <label for="bottleDate">預かり日</label>
+                        <input type="date" id="bottleDate">
+                    </div>
+                    <div class="field">
+                        <label for="bottleExpiry">保管期限</label>
+                        <input type="date" id="bottleExpiry">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>残量 <span id="remainingValue" class="remaining-val">100%</span></label>
+                    <input type="range" id="bottleRemaining" min="0" max="100" value="100" class="range-input">
+                </div>
+                <div class="field">
+                    <label for="bottleNote">メモ</label>
+                    <textarea id="bottleNote" rows="2" placeholder="備考..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" data-close="modalBottle">キャンセル</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Location Form -->
+    <div class="modal-overlay" id="modalLocation">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="locationModalTitle">新規保管場所</h2>
+                <button class="modal-close" data-close="modalLocation">✕</button>
+            </div>
+            <form id="locationForm" class="modal-body">
+                <input type="hidden" id="locationId">
+                <div class="field">
+                    <label for="locationName">場所名 <span class="req">*</span></label>
+                    <input type="text" id="locationName" required placeholder="例: A棚 上段" autocomplete="off">
+                </div>
+                <div class="field">
+                    <label for="locationArea">エリア</label>
+                    <input type="text" id="locationArea" placeholder="例: バーカウンター裏" autocomplete="off">
+                </div>
+                <div class="field">
+                    <label for="locationCapacity">最大収容本数</label>
+                    <input type="number" id="locationCapacity" min="1" value="10" inputmode="numeric">
+                </div>
+                <div class="field">
+                    <label for="locationNote">メモ</label>
+                    <textarea id="locationNote" rows="2" placeholder="備考..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" data-close="modalLocation">キャンセル</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Confirm -->
+    <div class="modal-overlay" id="modalConfirm">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h2>確認</h2>
+                <button class="modal-close" data-close="modalConfirm">✕</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage" class="confirm-msg">本当に削除しますか？</p>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" data-close="modalConfirm">キャンセル</button>
+                    <button class="btn btn-danger" id="confirmDelete">削除する</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast-wrap" id="toastContainer"></div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
