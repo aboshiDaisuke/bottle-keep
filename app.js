@@ -311,6 +311,20 @@ const App = {
             this.renderAll();
             toast('場所を登録しました');
         });
+
+        // Prevent Enter key in inline forms from submitting the main bottle form
+        const preventEnter = (inputId, btnId) => {
+            document.getElementById(inputId).addEventListener('keydown', e => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    document.getElementById(btnId).click();
+                }
+            });
+        };
+        preventEnter('inlineCustomerName', 'inlineCustSave');
+        preventEnter('inlineCustomerPhone', 'inlineCustSave');
+        preventEnter('inlineLocationName', 'inlineLocSave');
+        preventEnter('inlineLocationArea', 'inlineLocSave');
     },
 
     // Refresh selects inside bottle form without losing other inputs
@@ -319,14 +333,16 @@ const App = {
         const currentCust = selectCustomerId || cs.value;
         const customers = Store.getCustomers();
         cs.innerHTML = '<option value="">顧客を選択...</option>' +
-            customers.map(c => `<option value="${c.id}" ${c.id === currentCust ? 'selected' : ''}>${esc(c.name)}</option>`).join('');
+            customers.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
+        cs.value = currentCust; // Explicitly set value for all browsers
         document.getElementById('btnAddCustomerInline').classList.remove('pulse');
 
         const ls = document.getElementById('bottleLocation');
         const currentLoc = selectLocationId || ls.value;
         const locations = Store.getLocations();
         ls.innerHTML = '<option value="">場所を選択...</option>' +
-            locations.map(l => `<option value="${l.id}" ${l.id === currentLoc ? 'selected' : ''}>${esc(l.name)}${l.area ? ' (' + esc(l.area) + ')' : ''}</option>`).join('');
+            locations.map(l => `<option value="${l.id}">${esc(l.name)}${l.area ? ' (' + esc(l.area) + ')' : ''}</option>`).join('');
+        ls.value = currentLoc; // Explicitly set value for all browsers
         document.getElementById('btnAddLocationInline').classList.remove('pulse');
     },
 
