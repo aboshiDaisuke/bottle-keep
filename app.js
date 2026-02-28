@@ -427,6 +427,39 @@ const App = {
         document.getElementById('customerPhone').value = c ? c.phone || '' : '';
         document.getElementById('customerEmail').value = c ? c.email || '' : '';
         document.getElementById('customerNote').value = c ? c.note || '' : '';
+
+        const bField = document.getElementById('customerBottlesField');
+        const bList = document.getElementById('customerBottlesList');
+        if (c && c.id) {
+            bField.style.display = 'block';
+            const bottles = Store.getBottles().filter(b => b.customerId === c.id);
+            const locMap = {}; Store.getLocations().forEach(l => locMap[l.id] = l);
+            if (bottles.length > 0) {
+                bList.innerHTML = bottles.map(b => {
+                    const loc = locMap[b.locationId];
+                    const locName = loc ? esc(loc.name) : '未指定';
+                    const icon = CAT_ICON[b.category] || '🍾';
+                    const rc = b.remaining > 60 ? 'remain-hi' : b.remaining > 30 ? 'remain-md' : 'remain-lo';
+                    return `
+                        <div style="display:flex; align-items:center; padding: 12px 0px; border-bottom: 1px solid var(--border); gap: 12px; cursor: pointer;" onclick="closeModal('modalCustomer'); App.openBottleForm(Store.getBottles().find(x=>x.id==='${b.id}'))">
+                            <div style="font-size: 1.5rem;">${icon}</div>
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${esc(b.name)} <span class="badge badge-${b.status}" style="font-size:0.6rem;padding:2px 4px;">${STATUS_LABEL[b.status] || b.status}</span></div>
+                                <div style="font-size: 0.8rem; color: var(--c-sub); margin-top: 4px;">
+                                    📍 ${locName} • 残量 ${b.remaining}% <span class="remain-bar" style="display:inline-block;width:40px;height:6px;margin-left:4px;vertical-align:middle;"><span class="remain-fill ${rc}" style="width:${b.remaining}%"></span></span>
+                                </div>
+                            </div>
+                            <div style="color: var(--c-primary); font-size: 1.2rem; padding-right:8px;">›</div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                bList.innerHTML = '<div style="font-size: 0.85rem; color: var(--c-sub); padding: 12px; text-align: center;">所有しているボトルはありません</div>';
+            }
+        } else {
+            bField.style.display = 'none';
+        }
+
         openModal('modalCustomer');
     },
 

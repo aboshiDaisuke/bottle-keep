@@ -237,6 +237,14 @@
                     <label for="customerNote">メモ</label>
                     <textarea id="customerNote" rows="3" placeholder="備考..."></textarea>
                 </div>
+
+                <div class="field" id="customerBottlesField" style="display:none; margin-top: 16px;">
+                    <label>所有ボトル</label>
+                    <div id="customerBottlesList" class="item-list"
+                        style="max-height: 200px; overflow-y: auto; background: var(--bg-2); border-radius: var(--r-md); padding: 8px; gap: 0;">
+                    </div>
+                </div>
+
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" data-close="modalCustomer">キャンセル</button>
                     <button type="submit" class="btn btn-primary">保存</button>
