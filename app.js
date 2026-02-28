@@ -22,13 +22,18 @@ const Store = {
             list.push(c);
         }
         this._set(this.K.customers, list);
-        if (typeof FireSync !== 'undefined') FireSync.autoSync();
+        if (typeof FireSync !== 'undefined' && FireSync.user) FireSync.saveDoc('customers', c.id, c);
         return c;
     },
     deleteCustomer(id) {
         this._set(this.K.customers, this.getCustomers().filter(c => c.id !== id));
         this._set(this.K.bottles, this.getBottles().filter(b => b.customerId !== id));
-        if (typeof FireSync !== 'undefined') FireSync.autoSync();
+        if (typeof FireSync !== 'undefined' && FireSync.user) {
+            FireSync.deleteDoc('customers', id);
+            // Delete related bottles as well? This requires finding them. We leave it simply to local for now, 
+            // but effectively we should delete all related bottles in firestore too.
+            Store.getBottles().filter(b => b.customerId === id).forEach(b => FireSync.deleteDoc('bottles', b.id));
+        }
     },
 
     // Bottles
@@ -52,12 +57,12 @@ const Store = {
             list.push(b);
         }
         this._set(this.K.bottles, list);
-        if (typeof FireSync !== 'undefined') FireSync.autoSync();
+        if (typeof FireSync !== 'undefined' && FireSync.user) FireSync.saveDoc('bottles', b.id, b);
         return b;
     },
     deleteBottle(id) {
         this._set(this.K.bottles, this.getBottles().filter(b => b.id !== id));
-        if (typeof FireSync !== 'undefined') FireSync.autoSync();
+        if (typeof FireSync !== 'undefined' && FireSync.user) FireSync.deleteDoc('bottles', id);
     },
 
     // Locations
@@ -73,12 +78,12 @@ const Store = {
             list.push(l);
         }
         this._set(this.K.locations, list);
-        if (typeof FireSync !== 'undefined') FireSync.autoSync();
+        if (typeof FireSync !== 'undefined' && FireSync.user) FireSync.saveDoc('locations', l.id, l);
         return l;
     },
     deleteLocation(id) {
         this._set(this.K.locations, this.getLocations().filter(l => l.id !== id));
-        if (typeof FireSync !== 'undefined') FireSync.autoSync();
+        if (typeof FireSync !== 'undefined' && FireSync.user) FireSync.deleteDoc('locations', id);
     },
 
     // Export / Import

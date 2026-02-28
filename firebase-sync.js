@@ -31,7 +31,11 @@ const FireSync = {
                 this.user = user;
                 this.updateUI();
                 if (user) {
-                    this.downloadFromCloud();
+                    this.startRealtimeSync();
+                    // Optional: Download all data forcefully on first mount
+                    // this.downloadFromCloud(); 
+                } else {
+                    this.stopRealtimeSync();
                 }
             });
         } catch (e) {
@@ -59,6 +63,7 @@ const FireSync = {
 
     async signOut() {
         try {
+            this.stopRealtimeSync();
             await this.auth.signOut();
             toast('ログアウトしました');
         } catch (e) {
@@ -119,19 +124,29 @@ const FireSync = {
     },
 
     // ===== Sync =====
+
+    // Upload local data to cloud (Initial migration / Manual force)
     async uploadToCloud() {
         if (!this.user || this._syncing) return;
         this._syncing = true;
-
         try {
-            const data = {
-                customers: Store.getCustomers(),
-                bottles: Store.getBottles(),
-                locations: Store.getLocations(),
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-            };
+            const batch = this.db.batch();
+            const userRef = this.db.collection('users').doc(this.user.uid);
 
-            await this.db.collection('users').doc(this.user.uid).set(data, { merge: true });
+            // Set customers
+            Store.getCustomers().forEach(c => {
+                batch.set(userRef.collection('customers').doc(c.id), c, { merge: true });
+            });
+            // Set bottles
+            Store.getBottles().forEach(b => {
+                batch.set(userRef.collection('bottles').doc(b.id), b, { merge: true });
+            });
+            // Set locations
+            Store.getLocations().forEach(l => {
+                batch.set(userRef.collection('locations').doc(l.id), l, { merge: true });
+            });
+
+            await batch.commit();
             toast('☁️ クラウドに保存しました');
         } catch (e) {
             toast('クラウドへの保存に失敗しました', 'error');
@@ -141,31 +156,29 @@ const FireSync = {
         }
     },
 
+    // Pull ALL data from cloud (Manual force fallback)
     async downloadFromCloud() {
         if (!this.user || this._syncing) return;
         this._syncing = true;
-
         try {
-            const doc = await this.db.collection('users').doc(this.user.uid).get();
+            const userRef = this.db.collection('users').doc(this.user.uid);
+            const [custSnap, botSnap, locSnap] = await Promise.all([
+                userRef.collection('customers').get(),
+                userRef.collection('bottles').get(),
+                userRef.collection('locations').get()
+            ]);
 
-            if (doc.exists) {
-                const data = doc.data();
-                // Only replace if cloud has data
-                if (data.customers && data.customers.length > 0) {
-                    Store._set(Store.K.customers, data.customers);
-                }
-                if (data.bottles && data.bottles.length > 0) {
-                    Store._set(Store.K.bottles, data.bottles);
-                }
-                if (data.locations && data.locations.length > 0) {
-                    Store._set(Store.K.locations, data.locations);
-                }
-                App.renderAll();
-                toast('☁️ クラウドからデータを取得しました');
-            } else {
-                // No cloud data yet, upload current local data
-                await this.uploadToCloud();
-            }
+            const customers = [], bottles = [], locations = [];
+            custSnap.forEach(doc => customers.push(doc.data()));
+            botSnap.forEach(doc => bottles.push(doc.data()));
+            locSnap.forEach(doc => locations.push(doc.data()));
+
+            if (customers.length > 0) Store._set(Store.K.customers, customers);
+            if (bottles.length > 0) Store._set(Store.K.bottles, bottles);
+            if (locations.length > 0) Store._set(Store.K.locations, locations);
+
+            App.renderAll();
+            toast('☁️ クラウドからデータを取得しました');
         } catch (e) {
             toast('クラウドからの取得に失敗しました', 'error');
             console.error(e);
@@ -174,12 +187,79 @@ const FireSync = {
         }
     },
 
-    // Auto sync after local save
-    autoSync() {
-        if (this.user && !this._syncing) {
-            // Debounce: wait 2 seconds after last change
-            clearTimeout(this._syncTimer);
-            this._syncTimer = setTimeout(() => this.uploadToCloud(), 2000);
+    // Start Realtime Listeners
+    startRealtimeSync() {
+        if (!this.user) return;
+        const userRef = this.db.collection('users').doc(this.user.uid);
+
+        // Listen for Customers
+        this._unsubCustomers = userRef.collection('customers').onSnapshot(snap => {
+            if (this._syncing) return;
+            const customers = [];
+            snap.forEach(doc => customers.push(doc.data()));
+            if (customers.length > 0) {
+                Store._set(Store.K.customers, customers);
+                App.renderCustomers();
+                App.renderDashboard();
+            }
+        });
+
+        // Listen for Bottles
+        this._unsubBottles = userRef.collection('bottles').onSnapshot(snap => {
+            if (this._syncing) return;
+            const bottles = [];
+            snap.forEach(doc => bottles.push(doc.data()));
+            if (bottles.length > 0) {
+                Store._set(Store.K.bottles, bottles);
+                App.renderBottles();
+                App.renderDashboard();
+                if (App.page === 'customers') App.renderCustomers(); // Bottle count updates
+            }
+        });
+
+        // Listen for Locations
+        this._unsubLocations = userRef.collection('locations').onSnapshot(snap => {
+            if (this._syncing) return;
+            const locations = [];
+            snap.forEach(doc => locations.push(doc.data()));
+            if (locations.length > 0) {
+                Store._set(Store.K.locations, locations);
+                App.renderLocations();
+                App.renderDashboard();
+            }
+        });
+    },
+
+    stopRealtimeSync() {
+        if (this._unsubCustomers) this._unsubCustomers();
+        if (this._unsubBottles) this._unsubBottles();
+        if (this._unsubLocations) this._unsubLocations();
+    },
+
+    // Save single document to Firebase
+    async saveDoc(collection, id, data) {
+        if (!this.user) return;
+        try {
+            await this.db.collection('users').doc(this.user.uid)
+                .collection(collection).doc(id).set(data, { merge: true });
+        } catch (e) {
+            console.error(`Error saving ${collection}:`, e);
         }
+    },
+
+    // Delete single document from Firebase
+    async deleteDoc(collection, id) {
+        if (!this.user) return;
+        try {
+            await this.db.collection('users').doc(this.user.uid)
+                .collection(collection).doc(id).delete();
+        } catch (e) {
+            console.error(`Error deleting ${collection}:`, e);
+        }
+    },
+
+    // Triggered automatically by Store when saving/deleting locally
+    autoSync() {
+        // Obsolete flag removed since we now do atomic syncs via Store overrides
     }
 };
