@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>使い方ガイド - ボトルキープ</title>
+    <link rel="stylesheet" href="style.css?v=3">
+    <style>
+        .guide-container {
+            padding: 20px;
+            padding-top: max(20px, env(safe-area-inset-top));
+            padding-bottom: max(40px, env(safe-area-inset-bottom));
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .guide-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+            gap: 12px;
+        }
+
+        .back-btn {
+            background: var(--bg-1);
+            border: 1px solid var(--border-light);
+            color: var(--c-text);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+
+        .guide-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .step-block {
+            background: var(--bg-1);
+            border: 1px solid var(--border-light);
+            border-radius: var(--r-md);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .step-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--c-purple-l);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .step-text {
+            font-size: 0.9rem;
+            color: var(--c-sub);
+            line-height: 1.6;
+        }
+
+        .step-text ul {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .step-text li {
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <div class="page-container" style="overflow-y: auto;">
+            <div class="guide-container">
+                <div class="guide-header">
+                    <a href="index.html" class="back-btn">‹</a>
+                    <div class="guide-title">📖 使い方ガイド</div>
+                </div>
+
+                <div class="step-block">
+                    <div class="step-title"><span>1.</span> ボトルの登録方法</div>
+                    <div class="step-text">
+                        ボトルの登録は「ボトル」タブ右下の「＋」ボタンから行います。
+                        <ul>
+                            <li>顧客名と保管場所は必須化されています。まだ登録がない場合は、セレクトボックス横の「＋」ボタンから、<b>その場で追加（インライン追加）</b>が可能です。</li>
+                            <li>「預かり日」と「保管期限（任意）」を設定できます。</li>
+                            <li>初期の「残量」をスライダーで設定して保存してください。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-block">
+                    <div class="step-title"><span>2.</span> 消費履歴（ログ）の付け方</div>
+                    <div class="step-text">
+                        お客様が新しくお酒を飲んだら、履歴を残しましょう。
+                        <ul>
+                            <li>「ボトル」リストから、該当のボトルをタップします。</li>
+                            <li>編集画面が開くので、<b>「残量」のスライダーを今の量まで減らして「保存」</b>を押下します。</li>
+                            <li>これだけで自動的に、「いつ・何％消費したか」が【消費履歴】として記録されます。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-block">
+                    <div class="step-title"><span>3.</span> 顧客ごとの管理</div>
+                    <div class="step-text">
+                        「顧客」タブから顧客をタップすると、顧客の情報を編集できます。
+                        <ul>
+                            <li><b>所有ボトル一覧</b>: 画面下部に、そのお客様が現在キープしている全てのボトルの一覧が表示されます。</li>
+                            <li>ボトルの名前部分をタップすると、そのままそのボトルの編集・残量更新画面へとジャンプできます。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-block">
+                    <div class="step-title"><span>4.</span> 複数人での共有（クラウド同期）</div>
+                    <div class="step-text">
+                        スタッフ全員で同じ顧客・ボトルデータを共有できます。
+                        <ul>
+                            <li>「設定」タブの<b>「クラウド同期」</b>にて、お店用の共通Googleアカウントを使ってログインしてください。</li>
+                            <li>一度ログインすれば、以後はどの端末で変更を加えても、<b>全自動・リアルタイム</b>で他のスタッフの端末にもデータが反映されます。リロードの必要はありません。</li>
+                            <li>ネットが繋がらない場所でも一時的に保存され、ネット復帰時に自動で同期されます。</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
