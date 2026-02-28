@@ -27,13 +27,13 @@
                 <span class="tab-icon">🍾</span>
                 <span class="tab-label">ボトル</span>
             </button>
-            <button class="tab" data-page="locations" id="tab-locations">
-                <span class="tab-icon">📍</span>
-                <span class="tab-label">場所</span>
-            </button>
             <button class="tab" data-page="customers" id="tab-customers">
                 <span class="tab-icon">�</span>
                 <span class="tab-label">顧客</span>
+            </button>
+            <button class="tab" data-page="locations" id="tab-locations">
+                <span class="tab-icon">📍</span>
+                <span class="tab-label">場所</span>
             </button>
             <button class="tab" data-page="settings" id="tab-settings">
                 <span class="tab-icon">⚙️</span>
@@ -52,19 +52,23 @@
                 </header>
 
                 <div class="stats-row">
-                    <div class="stat stat-purple">
+                    <div class="stat stat-purple" onclick="document.getElementById('tab-customers').click()"
+                        style="cursor: pointer;">
                         <span class="stat-num" id="statCustomers">0</span>
                         <span class="stat-lbl">顧客</span>
                     </div>
-                    <div class="stat stat-pink">
+                    <div class="stat stat-pink" onclick="document.getElementById('tab-bottles').click()"
+                        style="cursor: pointer;">
                         <span class="stat-num" id="statBottles">0</span>
                         <span class="stat-lbl">ボトル</span>
                     </div>
-                    <div class="stat stat-blue">
+                    <div class="stat stat-blue" onclick="document.getElementById('tab-locations').click()"
+                        style="cursor: pointer;">
                         <span class="stat-num" id="statLocations">0</span>
                         <span class="stat-lbl">場所</span>
                     </div>
-                    <div class="stat stat-orange">
+                    <div class="stat stat-orange" onclick="document.getElementById('tab-bottles').click()"
+                        style="cursor: pointer;">
                         <span class="stat-num" id="statExpiring">0</span>
                         <span class="stat-lbl">期限近</span>
                     </div>
