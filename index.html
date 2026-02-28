@@ -348,6 +348,13 @@
                     <label>残量 <span id="remainingValue" class="remaining-val">100%</span></label>
                     <input type="range" id="bottleRemaining" min="0" max="100" value="100" class="range-input">
                 </div>
+                <!-- History -->
+                <div class="field" id="bottleHistoryField" style="display:none;">
+                    <label>消費履歴</label>
+                    <div id="bottleHistoryList"
+                        style="background: var(--bg-1); border: 1px solid var(--border-light); border-radius: var(--r-md); padding: 8px; max-height: 140px; overflow-y: auto;">
+                    </div>
+                </div>
                 <div class="field">
                     <label for="bottleNote">メモ</label>
                     <textarea id="bottleNote" rows="2" placeholder="備考..."></textarea>

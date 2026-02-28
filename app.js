@@ -38,9 +38,17 @@ const Store = {
         const now = new Date().toISOString();
         if (b.id) {
             const i = list.findIndex(x => x.id === b.id);
-            if (i !== -1) list[i] = { ...list[i], ...b, updatedAt: now };
+            if (i !== -1) {
+                const old = list[i];
+                const history = old.history || [];
+                if (old.remaining !== undefined && old.remaining !== b.remaining) {
+                    history.push({ date: now, old: old.remaining, new: b.remaining });
+                }
+                list[i] = { ...old, ...b, history, updatedAt: now };
+            }
         } else {
             b.id = this._id(); b.createdAt = now; b.updatedAt = now;
+            b.history = [{ date: now, old: 100, new: b.remaining || 100, isNew: true }];
             list.push(b);
         }
         this._set(this.K.bottles, list);
@@ -568,6 +576,33 @@ const App = {
         document.getElementById('bottleRemaining').value = b ? b.remaining : 100;
         document.getElementById('remainingValue').textContent = (b ? b.remaining : 100) + '%';
         document.getElementById('bottleNote').value = b ? b.note || '' : '';
+
+        const hField = document.getElementById('bottleHistoryField');
+        const hList = document.getElementById('bottleHistoryList');
+        if (b && b.history && b.history.length > 0) {
+            hField.style.display = 'block';
+            hList.innerHTML = b.history.slice().reverse().map(h => {
+                const d = new Date(h.date);
+                const ds = `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+                if (h.isNew) {
+                    return `
+                        <div style="display:flex; justify-content:space-between; padding: 6px 0; border-bottom: 1px solid var(--border-light); font-size: 0.8rem; color: var(--c-sub);">
+                            <span>${ds}</span>
+                            <span>新規登録 (${h.new}%)</span>
+                        </div>
+                    `;
+                }
+                return `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding: 6px 0; border-bottom: 1px solid var(--border-light); font-size: 0.85rem;">
+                        <span style="color: var(--c-sub); font-size: 0.75rem;">${ds}</span>
+                        <span>${h.old}% <span style="color:var(--c-muted);margin:0 4px;">→</span> <span style="color: var(--c-purple-l); font-weight: 600;">${h.new}%</span></span>
+                    </div>
+                `;
+            }).join('');
+        } else {
+            hField.style.display = 'none';
+        }
+
         openModal('modalBottle');
     },
 
